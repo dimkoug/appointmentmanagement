@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load cms %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-lg-12">
+    <a class="btn btn-primary pull-right" href="{% url 'appointment-create' %}?client={{object.pk}}"><i class="fa fa-plus" aria-hidden="true"></i>Add Appointment</a>
+  </div>
+</div>
+{% if object.appointments.all %}
+<div class="row">
+  <div class="col-lg-12">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Pk</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appointment in object.appointments.all %}
+        <tr>
+          <td>{{appointment.pk}}</td>
+          <td><a href="{% url_with_pk appointment 'detail' %}">{{appointment.date}}</a></td>
+          <td>
+            <a class="btn btn-warning" href="{% url_with_pk appointment 'update' %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+            <a class="btn btn-danger" href="{% url_with_pk appointment 'delete' %}"><i class="fa fa-times" aria-hidden="true"></i></a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" style="text-align:center;">No data</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
