@@ -47,11 +47,11 @@
                 {% if request.user.is_admin %}
                   {{request.user.email}}
                 {% else %}
-                {{request.user.profile_user.nickname}}
+                {{request.user.profile.nickname}}
                 {% endif %}
               </a>
               <div class="dropdown-menu" aria-labelledby="dropdown01">
-                <a class="dropdown-item" href="{% url 'profile-delete' request.user.pk %}">Delete Profile</a>
+                <a class="dropdown-item" href="{% url 'profile-detail' request.user.pk %}">Profile</a>
                 <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
               </div>
             </li>
