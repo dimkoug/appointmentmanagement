@@ -2,53 +2,58 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.db.models import Q
 
-from cms.views import BaseList, BaseDetail, BaseCreate, BaseUpdate, BaseDelete
+from core.views import CoreListView, CoreDetailView, CoreCreateView, CoreUpdateView, CoreDeleteView
 
 
 from .forms import ClientForm, AppointmentForm
 from .models import Client, Appointment
-from .mixins import ProtectedViewMixin, SaveProfileMixin
+from .mixins import ProtectedViewMixin, SaveProfileMixin, ProtectedObjectMixin
 
 
-class ClientList(ProtectedViewMixin, BaseList):
+class ClientList(ProtectedViewMixin, CoreListView):
     model = Client
     paginate_by = 100
+    template='list'
 
     def get_queryset(self):
         qs = super().get_queryset().filter(
-            profile=self.request.user.profile_user)
+            profile=self.request.user.profile)
         q = self.request.GET.get('q')
         if q and q != '':
             qs = qs.filter(Q(name__icontains=q) | Q(last__icontains=q))
         return qs
 
 
-class ClientDetail(ProtectedViewMixin, BaseDetail):
+class ClientDetail(ProtectedViewMixin, CoreDetailView):
     model = Client
+    template='detail'
 
 
-class ClientCreate(ProtectedViewMixin, SaveProfileMixin, BaseCreate):
-    model = Client
-    form_class = ClientForm
-
-
-class ClientUpdate(ProtectedViewMixin, BaseUpdate):
+class ClientCreate(ProtectedViewMixin, SaveProfileMixin, CoreCreateView):
     model = Client
     form_class = ClientForm
+    template='form'
 
 
-class ClientDelete(ProtectedViewMixin, BaseDelete):
+class ClientUpdate(ProtectedObjectMixin, ProtectedViewMixin, CoreUpdateView):
     model = Client
-    success_url = reverse_lazy('client-list')
+    form_class = ClientForm
+    template='form'
 
 
-class AppointmentList(ProtectedViewMixin, BaseList):
+class ClientDelete(ProtectedObjectMixin, ProtectedViewMixin, CoreDeleteView):
+    model = Client
+    template='confirm_delete'
+
+
+class AppointmentList(ProtectedViewMixin, CoreListView):
     model = Appointment
     paginate_by = 100
+    template='list'
 
     def get_queryset(self):
-        qs = super().get_queryset().filter(
-            profile=self.request.user.profile_user)
+        qs = super().get_queryset().select_related('client').filter(
+            client__profile=self.request.user.profile)
         q = self.request.GET.get('q')
         if q and q != '':
             qs = qs.filter(
@@ -56,13 +61,15 @@ class AppointmentList(ProtectedViewMixin, BaseList):
         return qs
 
 
-class AppointmentDetail(ProtectedViewMixin, BaseDetail):
+class AppointmentDetail(ProtectedViewMixin, CoreDetailView):
     model = Appointment
+    template='detail'
 
 
-class AppointmentCreate(ProtectedViewMixin, SaveProfileMixin, BaseCreate):
+class AppointmentCreate(ProtectedViewMixin, SaveProfileMixin, CoreCreateView):
     model = Appointment
     form_class = AppointmentForm
+    template='form'
 
     def get_initial(self):
         initial = super().get_initial()
@@ -73,11 +80,12 @@ class AppointmentCreate(ProtectedViewMixin, SaveProfileMixin, BaseCreate):
         return initial
 
 
-class AppointmentUpdate(ProtectedViewMixin, BaseUpdate):
+class AppointmentUpdate(ProtectedObjectMixin, ProtectedViewMixin, CoreUpdateView):
     model = Appointment
     form_class = AppointmentForm
+    template='form'
 
 
-class AppointmentDelete(ProtectedViewMixin, BaseDelete):
+class AppointmentDelete(ProtectedObjectMixin, ProtectedViewMixin, CoreDeleteView):
     model = Appointment
-    success_url = reverse_lazy('appointment-list')
+    template='confirm_delete'

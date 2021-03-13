@@ -6,7 +6,7 @@ from .views import (
     AppointmentUpdate, AppointmentDelete
 )
 
-
+app_name='appointments'
 urlpatterns = [
     path('', AppointmentList.as_view(), name='appointment-list'),
     path('<int:pk>/', AppointmentDetail.as_view(),

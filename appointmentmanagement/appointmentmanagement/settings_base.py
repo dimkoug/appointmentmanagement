@@ -28,14 +28,14 @@ DEBUG = False
 
 ALLOWED_HOSTS = []
 
-LOGIN_REDIRECT_URL = 'appointment-list'
-LOGOUT_REDIRECT_URL = 'appointment-list'
+LOGIN_REDIRECT_URL = 'appointments:appointment-list'
+LOGOUT_REDIRECT_URL = 'appointments:appointment-list'
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 
 # Application definition
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cms',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'core',
     'profiles',
     'users',
     'appointments',
@@ -179,3 +181,14 @@ DATETIME_INPUT_FORMATS = [
     '%d/%m/%y %H:%M',        # '10/25/06 14:30'
     '%d/%m/%y',              # '10/25/06'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'PAGE_SIZE': 10
+}
