@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+<div class="row mt-2">
+    <div class="card col-4 py-2 m-2">
+        <div class="card-header">
+            Appointments
+          </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"> <a href="{% url 'appointments:client-list' %}">Clients</a> </li>
+          <li class="list-group-item"> <a href="{% url 'appointments:appointment-list' %}">Appointments</a> </li>
+        </ul>
+      </div>
+</div>
+
+
+
+{% endblock content %}

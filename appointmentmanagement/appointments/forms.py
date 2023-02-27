@@ -10,17 +10,6 @@ class ClientForm(BootstrapForm, forms.ModelForm):
         model = Client
         fields = ('name', 'last', 'address', 'telephone')
 
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request")
-        super().__init__(*args, **kwargs)
-
-    def clean_date(self):
-        data = self.cleaned_data['date']
-        exists = Appointment.objects.filter(date=data)
-        if exists:
-            raise forms.ValidationError("Appointment exists")
-        return data
-
 
 class AppointmentForm(BootstrapForm, forms.ModelForm):
     class Meta:
@@ -30,10 +19,5 @@ class AppointmentForm(BootstrapForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
+        self.fields['client'].queryset = Client.objects.select_related('profile').filter(profile_id=self.request.user.profile)
 
-    def clean_date(self):
-        data = self.cleaned_data['date']
-        exists = Appointment.objects.filter(date=data)
-        if exists:
-            raise forms.ValidationError("Appointment exists")
-        return data
