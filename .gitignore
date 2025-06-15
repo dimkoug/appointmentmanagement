@@ -3,7 +3,6 @@ env
 .env
 public
 data
-migrations
 settings_local.py
 __pycache__
 *.pyc
@@ -11,3 +10,9 @@ debug.log
 *.sqlite3
 venv
 *.bat
+
+celerybeat-*
+
+**/migrations/*.py
+**/migrations/*.pyc
+!**/migrations/__init__.py
